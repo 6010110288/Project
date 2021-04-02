@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserManagement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">basic</a> &gt; <a href="index.source.html" class="el_package">org.hyperledger.fabric.samples.assettransfer</a> &gt; <span class="el_source">UserManagement.java</span></div><h1>UserManagement.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package org.hyperledger.fabric.samples.assettransfer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hyperledger.fabric.contract.Context;
+import org.hyperledger.fabric.contract.ContractInterface;
+import org.hyperledger.fabric.contract.annotation.Contact;
+import org.hyperledger.fabric.contract.annotation.Contract;
+import org.hyperledger.fabric.contract.annotation.Default;
+import org.hyperledger.fabric.contract.annotation.Info;
+import org.hyperledger.fabric.contract.annotation.License;
+import org.hyperledger.fabric.contract.annotation.Transaction;
+import org.hyperledger.fabric.shim.ChaincodeException;
+import org.hyperledger.fabric.shim.ChaincodeStub;
+import org.hyperledger.fabric.shim.ledger.KeyValue;
+import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
+
+import com.owlike.genson.Genson;
+
+@Contract(
+        name = &quot;userman&quot;,
+        info = @Info(
+                title = &quot;User management&quot;,
+                description = &quot;The hyperlegendary user management&quot;,
+                version = &quot;0.0.1-SNAPSHOT&quot;,
+                license = @License(
+                        name = &quot;Apache 2.0 License&quot;,
+                        url = &quot;http://www.apache.org/licenses/LICENSE-2.0.html&quot;),
+                contact = @Contact(
+                        email = &quot;6010110288@psu.ac.th&quot;,
+                        name = &quot;M.Yingsung&quot;,
+                        url = &quot;-&quot;)))
+@Default
+<span class="fc" id="L39">public final class UserManagement implements ContractInterface {</span>
+
+<span class="fc" id="L41">    private final Genson genson = new Genson();</span>
+
+<span class="fc" id="L43">    private enum UserManagementErrors {</span>
+<span class="fc" id="L44">        USER_NOT_FOUND,</span>
+<span class="fc" id="L45">        USER_ALREADY_EXISTS</span>
+    }
+
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
+    public void InitLedger(final Context ctx) {
+<span class="fc" id="L50">        ChaincodeStub stub = ctx.getStub();</span>
+
+<span class="fc" id="L52">        AddNewUser(ctx, &quot;user1&quot;, &quot;Alice&quot;, &quot;11&quot;, &quot;Owner&quot;, &quot;KhoHong&quot;);</span>
+<span class="fc" id="L53">    }</span>
+
+
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
+    public User AddNewUser(final Context ctx, final String userID, final String name, final String permission,
+        final String position, final String description) {
+<span class="fc" id="L59">        ChaincodeStub stub = ctx.getStub();</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (UserExists(ctx, userID)) {</span>
+<span class="fc" id="L62">            String errorMessage = String.format(&quot;User %s already exists&quot;, userID);</span>
+<span class="fc" id="L63">            System.out.println(errorMessage);</span>
+<span class="fc" id="L64">            throw new ChaincodeException(errorMessage, UserManagementErrors.USER_ALREADY_EXISTS.toString());</span>
+        }
+
+<span class="fc" id="L67">        User user = new User(userID, name, permission, position, description);</span>
+<span class="fc" id="L68">        String userJSON = genson.serialize(user);</span>
+<span class="fc" id="L69">        stub.putStringState(userID, userJSON);</span>
+
+<span class="fc" id="L71">        return user;</span>
+    }
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public User GetUser(final Context ctx, final String userID) {
+<span class="fc" id="L76">        ChaincodeStub stub = ctx.getStub();</span>
+<span class="fc" id="L77">        String userJSON = stub.getStringState(userID);</span>
+
+<span class="pc bpc" id="L79" title="1 of 4 branches missed.">        if (userJSON == null || userJSON.isEmpty()) {</span>
+<span class="fc" id="L80">            String errorMessage = String.format(&quot;User %s does not exist&quot;, userID);</span>
+<span class="fc" id="L81">            System.out.println(errorMessage);</span>
+<span class="fc" id="L82">            throw new ChaincodeException(errorMessage, UserManagementErrors.USER_NOT_FOUND.toString());</span>
+        }
+
+<span class="fc" id="L85">        User user = genson.deserialize(userJSON, User.class);</span>
+<span class="fc" id="L86">        return user;</span>
+    }
+
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
+    public User UpdateUser(final Context ctx, final String userID, final String newPermission) {
+<span class="fc" id="L91">        ChaincodeStub stub = ctx.getStub();</span>
+<span class="fc" id="L92">        String userJSON = stub.getStringState(userID);</span>
+
+<span class="pc bpc" id="L94" title="1 of 4 branches missed.">        if (userJSON == null || userJSON.isEmpty()) {</span>
+<span class="fc" id="L95">            String errorMessage = String.format(&quot;User %s does not exist&quot;, userID);</span>
+<span class="fc" id="L96">            System.out.println(errorMessage);</span>
+<span class="fc" id="L97">            throw new ChaincodeException(errorMessage, UserManagementErrors.USER_NOT_FOUND.toString());</span>
+        }
+
+<span class="fc" id="L100">        User user = genson.deserialize(userJSON, User.class);</span>
+
+<span class="fc" id="L102">        User newUser = new User(user.getUserID(), user.getName(), newPermission, user.getPosition(), user.getDescription());</span>
+<span class="fc" id="L103">        String newUserJSON = genson.serialize(newUser);</span>
+<span class="fc" id="L104">        stub.putStringState(userID, newUserJSON);</span>
+
+<span class="fc" id="L106">        return newUser;</span>
+    }
+
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
+    public void DeleteUser(final Context ctx, final String userID) {
+<span class="fc" id="L111">        ChaincodeStub stub = ctx.getStub();</span>
+
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if (!UserExists(ctx, userID)) {</span>
+<span class="fc" id="L114">            String errorMessage = String.format(&quot;User %s does not exist&quot;, userID);</span>
+<span class="fc" id="L115">            System.out.println(errorMessage);</span>
+<span class="fc" id="L116">            throw new ChaincodeException(errorMessage, UserManagementErrors.USER_NOT_FOUND.toString());</span>
+        }
+
+<span class="nc" id="L119">        stub.delState(userID);</span>
+<span class="nc" id="L120">    }</span>
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public boolean UserExists(final Context ctx, final String userID) {
+<span class="fc" id="L124">        ChaincodeStub stub = ctx.getStub();</span>
+<span class="fc" id="L125">        String userJSON = stub.getStringState(userID);</span>
+
+<span class="fc bfc" id="L127" title="All 4 branches covered.">        return (userJSON != null &amp;&amp; !userJSON.isEmpty());</span>
+    }
+
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public String GetAllUsers(final Context ctx) {
+<span class="fc" id="L133">        ChaincodeStub stub = ctx.getStub();</span>
+
+<span class="fc" id="L135">        List&lt;User&gt; queryResults = new ArrayList&lt;User&gt;();</span>
+
+        // To retrieve all assets from the ledger use getStateByRange with empty startKey &amp; endKey.
+        // Giving empty startKey &amp; endKey is interpreted as all the keys from beginning to end.
+        // As another example, if you use startKey = 'asset0', endKey = 'asset9' ,
+        // then getStateByRange will retrieve asset with keys between asset0 (inclusive) and asset9 (exclusive) in lexical order.
+<span class="fc" id="L141">        QueryResultsIterator&lt;KeyValue&gt; results = stub.getStateByRange(&quot;&quot;, &quot;&quot;);</span>
+
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        for (KeyValue result: results) {</span>
+<span class="fc" id="L144">            User user = genson.deserialize(result.getStringValue(), User.class);</span>
+<span class="fc" id="L145">            queryResults.add(user);</span>
+<span class="fc" id="L146">            System.out.println(user.toString());</span>
+<span class="fc" id="L147">        }</span>
+
+<span class="fc" id="L149">        final String response = genson.serialize(queryResults);</span>
+
+<span class="fc" id="L151">        return response;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FabCar.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fabcar</a> &gt; <a href="index.source.html" class="el_package">org.hyperledger.fabric.samples.fabcar</a> &gt; <span class="el_source">FabCar.java</span></div><h1>FabCar.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package org.hyperledger.fabric.samples.fabcar;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hyperledger.fabric.contract.Context;
+import org.hyperledger.fabric.contract.ContractInterface;
+import org.hyperledger.fabric.contract.annotation.Contact;
+import org.hyperledger.fabric.contract.annotation.Contract;
+import org.hyperledger.fabric.contract.annotation.Default;
+import org.hyperledger.fabric.contract.annotation.Info;
+import org.hyperledger.fabric.contract.annotation.License;
+import org.hyperledger.fabric.contract.annotation.Transaction;
+import org.hyperledger.fabric.shim.ChaincodeException;
+import org.hyperledger.fabric.shim.ChaincodeStub;
+import org.hyperledger.fabric.shim.ledger.KeyValue;
+import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
+
+import com.owlike.genson.Genson;
+
+/**
+ * Java implementation of the Fabric Car Contract described in the Writing Your
+ * First Application tutorial
+ */
+@Contract(
+        name = &quot;FabCar&quot;,
+        info = @Info(
+                title = &quot;FabCar contract&quot;,
+                description = &quot;The hyperlegendary car contract&quot;,
+                version = &quot;0.0.1-SNAPSHOT&quot;,
+                license = @License(
+                        name = &quot;Apache 2.0 License&quot;,
+                        url = &quot;http://www.apache.org/licenses/LICENSE-2.0.html&quot;),
+                contact = @Contact(
+                        email = &quot;f.carr@example.com&quot;,
+                        name = &quot;F Carr&quot;,
+                        url = &quot;https://hyperledger.example.com&quot;)))
+@Default
+<span class="fc" id="L43">public final class FabCar implements ContractInterface {</span>
+
+<span class="fc" id="L45">    private final Genson genson = new Genson();</span>
+
+<span class="fc" id="L47">    private enum FabCarErrors {</span>
+<span class="fc" id="L48">        CAR_NOT_FOUND,</span>
+<span class="fc" id="L49">        CAR_ALREADY_EXISTS</span>
+    }
+
+    /**
+     * Retrieves a car with the specified key from the ledger.
+     *
+     * @param ctx the transaction context
+     * @param key the key
+     * @return the Car found on the ledger if there was one
+     */
+    @Transaction()
+    public Car queryCar(final Context ctx, final String key) {
+<span class="fc" id="L61">        ChaincodeStub stub = ctx.getStub();</span>
+<span class="fc" id="L62">        String carState = stub.getStringState(key);</span>
+
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (carState.isEmpty()) {</span>
+<span class="fc" id="L65">            String errorMessage = String.format(&quot;Car %s does not exist&quot;, key);</span>
+<span class="fc" id="L66">            System.out.println(errorMessage);</span>
+<span class="fc" id="L67">            throw new ChaincodeException(errorMessage, FabCarErrors.CAR_NOT_FOUND.toString());</span>
+        }
+
+<span class="fc" id="L70">        Car car = genson.deserialize(carState, Car.class);</span>
+
+<span class="fc" id="L72">        return car;</span>
+    }
+
+    /**
+     * Creates some initial Cars on the ledger.
+     *
+     * @param ctx the transaction context
+     */
+    @Transaction()
+    public void initLedger(final Context ctx) {
+<span class="fc" id="L82">        ChaincodeStub stub = ctx.getStub();</span>
+
+<span class="fc" id="L84">        String[] carData = {</span>
+                &quot;{ \&quot;make\&quot;: \&quot;Toyota\&quot;, \&quot;model\&quot;: \&quot;Prius\&quot;, \&quot;color\&quot;: \&quot;blue\&quot;, \&quot;owner\&quot;: \&quot;Tomoko\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Ford\&quot;, \&quot;model\&quot;: \&quot;Mustang\&quot;, \&quot;color\&quot;: \&quot;red\&quot;, \&quot;owner\&quot;: \&quot;Brad\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Hyundai\&quot;, \&quot;model\&quot;: \&quot;Tucson\&quot;, \&quot;color\&quot;: \&quot;green\&quot;, \&quot;owner\&quot;: \&quot;Jin Soo\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Volkswagen\&quot;, \&quot;model\&quot;: \&quot;Passat\&quot;, \&quot;color\&quot;: \&quot;yellow\&quot;, \&quot;owner\&quot;: \&quot;Max\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Tesla\&quot;, \&quot;model\&quot;: \&quot;S\&quot;, \&quot;color\&quot;: \&quot;black\&quot;, \&quot;owner\&quot;: \&quot;Adrian\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Peugeot\&quot;, \&quot;model\&quot;: \&quot;205\&quot;, \&quot;color\&quot;: \&quot;purple\&quot;, \&quot;owner\&quot;: \&quot;Michel\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Chery\&quot;, \&quot;model\&quot;: \&quot;S22L\&quot;, \&quot;color\&quot;: \&quot;white\&quot;, \&quot;owner\&quot;: \&quot;Aarav\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Fiat\&quot;, \&quot;model\&quot;: \&quot;Punto\&quot;, \&quot;color\&quot;: \&quot;violet\&quot;, \&quot;owner\&quot;: \&quot;Pari\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Tata\&quot;, \&quot;model\&quot;: \&quot;nano\&quot;, \&quot;color\&quot;: \&quot;indigo\&quot;, \&quot;owner\&quot;: \&quot;Valeria\&quot; }&quot;,
+                &quot;{ \&quot;make\&quot;: \&quot;Holden\&quot;, \&quot;model\&quot;: \&quot;Barina\&quot;, \&quot;color\&quot;: \&quot;brown\&quot;, \&quot;owner\&quot;: \&quot;Shotaro\&quot; }&quot;
+        };
+
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        for (int i = 0; i &lt; carData.length; i++) {</span>
+<span class="fc" id="L98">            String key = String.format(&quot;CAR%d&quot;, i);</span>
+
+<span class="fc" id="L100">            Car car = genson.deserialize(carData[i], Car.class);</span>
+<span class="fc" id="L101">            String carState = genson.serialize(car);</span>
+<span class="fc" id="L102">            stub.putStringState(key, carState);</span>
+        }
+<span class="fc" id="L104">    }</span>
+
+    /**
+     * Creates a new car on the ledger.
+     *
+     * @param ctx the transaction context
+     * @param key the key for the new car
+     * @param make the make of the new car
+     * @param model the model of the new car
+     * @param color the color of the new car
+     * @param owner the owner of the new car
+     * @return the created Car
+     */
+    @Transaction()
+    public Car createCar(final Context ctx, final String key, final String make, final String model,
+            final String color, final String owner) {
+<span class="fc" id="L120">        ChaincodeStub stub = ctx.getStub();</span>
+
+<span class="fc" id="L122">        String carState = stub.getStringState(key);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (!carState.isEmpty()) {</span>
+<span class="fc" id="L124">            String errorMessage = String.format(&quot;Car %s already exists&quot;, key);</span>
+<span class="fc" id="L125">            System.out.println(errorMessage);</span>
+<span class="fc" id="L126">            throw new ChaincodeException(errorMessage, FabCarErrors.CAR_ALREADY_EXISTS.toString());</span>
+        }
+
+<span class="fc" id="L129">        Car car = new Car(make, model, color, owner);</span>
+<span class="fc" id="L130">        carState = genson.serialize(car);</span>
+<span class="fc" id="L131">        stub.putStringState(key, carState);</span>
+
+<span class="fc" id="L133">        return car;</span>
+    }
+
+    /**
+     * Retrieves all cars from the ledger.
+     *
+     * @param ctx the transaction context
+     * @return array of Cars found on the ledger
+     */
+    @Transaction()
+    public String queryAllCars(final Context ctx) {
+<span class="fc" id="L144">        ChaincodeStub stub = ctx.getStub();</span>
+
+<span class="fc" id="L146">        final String startKey = &quot;CAR1&quot;;</span>
+<span class="fc" id="L147">        final String endKey = &quot;CAR99&quot;;</span>
+<span class="fc" id="L148">        List&lt;CarQueryResult&gt; queryResults = new ArrayList&lt;CarQueryResult&gt;();</span>
+
+<span class="fc" id="L150">        QueryResultsIterator&lt;KeyValue&gt; results = stub.getStateByRange(startKey, endKey);</span>
+
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        for (KeyValue result: results) {</span>
+<span class="fc" id="L153">            Car car = genson.deserialize(result.getStringValue(), Car.class);</span>
+<span class="fc" id="L154">            queryResults.add(new CarQueryResult(result.getKey(), car));</span>
+<span class="fc" id="L155">        }</span>
+
+<span class="fc" id="L157">        final String response = genson.serialize(queryResults);</span>
+
+<span class="fc" id="L159">        return response;</span>
+    }
+
+    /**
+     * Changes the owner of a car on the ledger.
+     *
+     * @param ctx the transaction context
+     * @param key the key
+     * @param newOwner the new owner
+     * @return the updated Car
+     */
+    @Transaction()
+    public Car changeCarOwner(final Context ctx, final String key, final String newOwner) {
+<span class="fc" id="L172">        ChaincodeStub stub = ctx.getStub();</span>
+
+<span class="fc" id="L174">        String carState = stub.getStringState(key);</span>
+
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        if (carState.isEmpty()) {</span>
+<span class="fc" id="L177">            String errorMessage = String.format(&quot;Car %s does not exist&quot;, key);</span>
+<span class="fc" id="L178">            System.out.println(errorMessage);</span>
+<span class="fc" id="L179">            throw new ChaincodeException(errorMessage, FabCarErrors.CAR_NOT_FOUND.toString());</span>
+        }
+
+<span class="fc" id="L182">        Car car = genson.deserialize(carState, Car.class);</span>
+
+<span class="fc" id="L184">        Car newCar = new Car(car.getMake(), car.getModel(), car.getColor(), newOwner);</span>
+<span class="fc" id="L185">        String newCarState = genson.serialize(newCar);</span>
+<span class="fc" id="L186">        stub.putStringState(key, newCarState);</span>
+
+<span class="fc" id="L188">        return newCar;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

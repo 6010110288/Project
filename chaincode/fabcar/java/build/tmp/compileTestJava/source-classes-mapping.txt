@@ -1,0 +1,13 @@
+org/hyperledger/fabric/samples/fabcar/FabCarTest.java
+ org.hyperledger.fabric.samples.fabcar.FabCarTest
+ org.hyperledger.fabric.samples.fabcar.FabCarTest$ChangeCarOwnerTransaction
+ org.hyperledger.fabric.samples.fabcar.FabCarTest$InvokeCreateCarTransaction
+ org.hyperledger.fabric.samples.fabcar.FabCarTest$InvokeQueryCarTransaction
+ org.hyperledger.fabric.samples.fabcar.FabCarTest$MockCarResultsIterator
+ org.hyperledger.fabric.samples.fabcar.FabCarTest$MockKeyValue
+org/hyperledger/fabric/samples/fabcar/CarQueryResultTest.java
+ org.hyperledger.fabric.samples.fabcar.CarQueryResultTest
+ org.hyperledger.fabric.samples.fabcar.CarQueryResultTest$Equality
+org/hyperledger/fabric/samples/fabcar/CarTest.java
+ org.hyperledger.fabric.samples.fabcar.CarTest
+ org.hyperledger.fabric.samples.fabcar.CarTest$Equality

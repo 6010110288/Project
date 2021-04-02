@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CarQueryResult.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fabcar</a> &gt; <a href="index.source.html" class="el_package">org.hyperledger.fabric.samples.fabcar</a> &gt; <span class="el_source">CarQueryResult.java</span></div><h1>CarQueryResult.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package org.hyperledger.fabric.samples.fabcar;
+
+import java.util.Objects;
+
+import org.hyperledger.fabric.contract.annotation.DataType;
+import org.hyperledger.fabric.contract.annotation.Property;
+
+import com.owlike.genson.annotation.JsonProperty;
+
+/**
+ * CarQueryResult structure used for handling result of query
+ *
+ */
+@DataType()
+public final class CarQueryResult {
+    @Property()
+    private final String key;
+
+    @Property()
+    private final Car record;
+
+<span class="fc" id="L26">    public CarQueryResult(@JsonProperty(&quot;Key&quot;) final String key, @JsonProperty(&quot;Record&quot;) final Car record) {</span>
+<span class="fc" id="L27">        this.key = key;</span>
+<span class="fc" id="L28">        this.record = record;</span>
+<span class="fc" id="L29">    }</span>
+
+    public String getKey() {
+<span class="fc" id="L32">        return key;</span>
+    }
+
+    public Car getRecord() {
+<span class="fc" id="L36">        return record;</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (this == obj) {</span>
+<span class="fc" id="L42">            return true;</span>
+        }
+
+<span class="fc bfc" id="L45" title="All 4 branches covered.">        if ((obj == null) || (getClass() != obj.getClass())) {</span>
+<span class="fc" id="L46">            return false;</span>
+        }
+
+<span class="fc" id="L49">        CarQueryResult other = (CarQueryResult) obj;</span>
+
+<span class="fc" id="L51">        Boolean recordsAreEquals = this.getRecord().equals(other.getRecord());</span>
+<span class="fc" id="L52">        Boolean keysAreEquals = this.getKey().equals(other.getKey());</span>
+
+<span class="fc bfc" id="L54" title="All 4 branches covered.">        return recordsAreEquals &amp;&amp; keysAreEquals;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L59">        return Objects.hash(this.getKey(), this.getRecord());</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L64">        return this.getClass().getSimpleName() + &quot;@&quot; + Integer.toHexString(hashCode()) + &quot; [key=&quot; + key + &quot;, record=&quot;</span>
+                + record + &quot;]&quot;;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

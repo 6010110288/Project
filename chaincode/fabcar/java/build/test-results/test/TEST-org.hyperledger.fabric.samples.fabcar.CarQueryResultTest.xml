@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.hyperledger.fabric.samples.fabcar.CarQueryResultTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-03-12T01:16:50" hostname="methawee-VirtualBox" time="0.395">
+  <properties/>
+  <testcase name="toStringIdentifiesCarQueryResult()" classname="org.hyperledger.fabric.samples.fabcar.CarQueryResultTest" time="0.395"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

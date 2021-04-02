@@ -1,0 +1,5 @@
+org/hyperledger/fabric/samples/assettransfer/User.java
+ org.hyperledger.fabric.samples.assettransfer.User
+org/hyperledger/fabric/samples/assettransfer/UserManagement.java
+ org.hyperledger.fabric.samples.assettransfer.UserManagement
+ org.hyperledger.fabric.samples.assettransfer.UserManagement$UserManagementErrors

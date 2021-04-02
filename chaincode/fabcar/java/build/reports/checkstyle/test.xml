@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.21">
+<file name="/home/methawee/fabric-samples/chaincode/fabcar/java/src/test/java/org/hyperledger/fabric/samples/fabcar/CarQueryResultTest.java">
+</file>
+<file name="/home/methawee/fabric-samples/chaincode/fabcar/java/src/test/java/org/hyperledger/fabric/samples/fabcar/CarTest.java">
+</file>
+<file name="/home/methawee/fabric-samples/chaincode/fabcar/java/src/test/java/org/hyperledger/fabric/samples/fabcar/FabCarTest.java">
+</file>
+</checkstyle>

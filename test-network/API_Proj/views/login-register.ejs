@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initfail-scale=1.0">
+        <title>Login and Register</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container p-5">
+               <h1 class="text-center mb-5 text-uppercase text-muted">Personal Health Record system</h1>
+               <div class="row">
+                   <div class="col-sm-5 bg-light rounded py-3">
+                       <h2 class="text-center">Login</h2>
+                       <form action="" method="post" novalidate>
+                           <div class="form-group mt-2 ">
+                               <label for="_user">Username</label>
+                               <input type="text" name="user_name" id="_user" class="form-control" placeholder="Username" required>
+                           </div>
+                           <div class="form-group mt-2 ">
+                               <label for="_pass">Password</label>
+                               <input type="password" name="user_pass", id="_pass" class="form-control" placeholder="Password" required>
+                           </div>
+                           <% if (locals.login_error) {
+                            login_error.forEach(function(error_msg) { %>
+                            <div class="alert alert-danger" role="alert"><%= error_msg %></div>
+                            <%   })
+                            } %>
+                           <button type="submit" class="mt-2 btn btn-primary">Sign In</button>
+                       </form>
+                   </div>
+
+                   <div class="col-sm-6 bg-light rounded border py-3 offset-sm-1">
+                        <h2 class="text-center">Register</h2>
+                        <form action="/register" method="post" novalidate>
+                            <div class="form-group mt-2 ">
+                                <label for="_user">Username</label>
+                                <input type="text" name="user_name" id="_user" class="form-control" placeholder="Username" value="<%= (locals.old_data) ? old_data.user_name : '' %>" required>
+                            </div>
+                            <div class="form-group mt-2 ">
+                                <label for="_pass">Password</label>
+                                <input type="password" name="user_pass", id="_pass" class="form-control" placeholder="Password" value="<%= (locals.old_data) ? old_data.user_pass : '' %>" required>
+                            </div>
+                            <div class="form-group mt-2 ">
+                                <label for="_type">Type</label>
+                                <input type="text" name="user_type" id="_type" class="form-control" placeholder="Please select one" list="type_list" value="<%= (locals.old_data) ? old_data.user_type : '' %>" required>
+                                <datalist id="type_list" >
+                                    <option value="Doctor">Doctor</option>
+                                    <option value="Nurse">Nurse</option>
+                                    <option value="Other">Other</option>
+                                </datalist>
+                            </div>
+                            <div class="form-group mt-2 ">
+                                <label for="_name">Organization</label>
+                                <input type="text" name="user_org" id="_org" class="form-control" placeholder="Please select one" list="org_list" value="<%= (locals.old_data) ? old_data.user_org : '' %>" required>
+                                <datalist  id="org_list">
+                                    <option value="Hospital1">Hospital1</option>
+                                    <option value="Hospital2">Hospital2</option>
+                                    <option value="Other">Other</option>
+                                </datalist>
+                            </div>
+                            <% if (locals.register_error) {
+                                register_error.forEach(function(error_msg) { %>
+                                <div class="alert alert-danger" role="alert"><%= error_msg %></div>
+                            <%   })
+                            } %>
+
+                            <button type="submit" class="mt-2 btn btn-success">Sign Up</button>
+                        </form>
+                   </div>
+               </div>
+        </div>
+    </body>
+
+</html>

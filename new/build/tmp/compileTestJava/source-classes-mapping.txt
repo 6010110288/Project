@@ -1,0 +1,11 @@
+org/hyperledger/fabric/samples/assettransfer/UserTest.java
+ org.hyperledger.fabric.samples.assettransfer.UserTest
+ org.hyperledger.fabric.samples.assettransfer.UserTest$Equality
+org/hyperledger/fabric/samples/assettransfer/UserManagementTest.java
+ org.hyperledger.fabric.samples.assettransfer.UserManagementTest
+ org.hyperledger.fabric.samples.assettransfer.UserManagementTest$DeleteUserTransaction
+ org.hyperledger.fabric.samples.assettransfer.UserManagementTest$InvokeAddNewUserTransaction
+ org.hyperledger.fabric.samples.assettransfer.UserManagementTest$InvokeReadUserTransaction
+ org.hyperledger.fabric.samples.assettransfer.UserManagementTest$MockKeyValue
+ org.hyperledger.fabric.samples.assettransfer.UserManagementTest$MockUserResultsIterator
+ org.hyperledger.fabric.samples.assettransfer.UserManagementTest$UpdateUserTransaction

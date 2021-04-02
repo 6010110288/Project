@@ -1,0 +1,7 @@
+org/hyperledger/fabric/samples/fabcar/Car.java
+ org.hyperledger.fabric.samples.fabcar.Car
+org/hyperledger/fabric/samples/fabcar/CarQueryResult.java
+ org.hyperledger.fabric.samples.fabcar.CarQueryResult
+org/hyperledger/fabric/samples/fabcar/FabCar.java
+ org.hyperledger.fabric.samples.fabcar.FabCar
+ org.hyperledger.fabric.samples.fabcar.FabCar$FabCarErrors

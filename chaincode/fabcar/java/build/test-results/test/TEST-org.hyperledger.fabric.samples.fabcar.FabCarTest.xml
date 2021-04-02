@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.hyperledger.fabric.samples.fabcar.FabCarTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-03-12T01:16:51" hostname="methawee-VirtualBox" time="2.097">
+  <properties/>
+  <testcase name="invokeQueryAllCarsTransaction()" classname="org.hyperledger.fabric.samples.fabcar.FabCarTest" time="2.01"/>
+  <testcase name="invokeInitLedgerTransaction()" classname="org.hyperledger.fabric.samples.fabcar.FabCarTest" time="0.042"/>
+  <testcase name="invokeUnknownTransaction()" classname="org.hyperledger.fabric.samples.fabcar.FabCarTest" time="0.03"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
